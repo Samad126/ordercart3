@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --maincolor: #142E4F;
+            --secondcolor: #204577;
+        }
+
+        span {
+            top: -13px;
+            right: -5px;
+        }
+
+        #nav,
+        #filtersDiv {
+            background: var(--maincolor) !important;
+        }
+
+        #filtersDiv>button,
+        .addToCartBtn,
+        .updateControlls>button {
+            background-color: var(--secondcolor) !important;
+        }
+
+        #orderCountRes {
+            min-width: 20px;
+            min-height: 20px;
+        }
+
+        #filtersDiv {
+            gap: 15px;
+        }
+
+        #productsDiv img {
+            height: 170px;
+            object-fit: cover;
+        }
+
+        .updateControlls {
+            gap: 5px;
+        }
+
+        dialog {
+            max-width: 500px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <dialog class="border-0">
+        <div class="position-relative">
+            <button onclick="handleDialog('close')"
+                class="position-absolute end-0 border-0 bg-transparent text-md">x</button>
+            <h2 class="text-center">Səbətiniz</h2>
+            <div id="orderProds">
+
+            </div>
+            <p id="total">Toplam : $0</p>
+        </div>
+    </dialog>
+    <header>
+        <nav id="nav" class="navbar bg-body-tertiary">
+            <div class="container">
+                <a class="navbar-brand text-white">Alış verış saytı</a>
+                <button onclick="handleDialog()" class="position-relative border-0 bg-transparent"><span
+                        id="orderCountRes"
+                        class="position-absolute d-flex justify-content-center align-items-center bg-danger rounded-circle text-white">0</span><i
+                        class="fa-solid fa-cart-shopping text-white"></i></button>
+            </div>
+        </nav>
+    </header>
+    <main class="container-fluid row mt-2">
+        <div class="col-md-2 d-flex flex-column pt-3" id="filtersDiv">
+
+        </div>
+        <div class="row row-cols-1 row-cols-md-4 g-4 col-md-10 pb-5" id="productsDiv">
+            <div class="col">
+                <div class="card h-100 p-2">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu470ZLW8ZsDAZxEImUlRDMAjQcrZgT97d9A&s"
+                        class="card-img-top rounded" alt="...">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">Qiymət</p>
+                        <button class="addToCartBtn text-white p-1 rounded">Səbətə əlavə et</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: "Laptop",
+                price: 1000,
+                category: "tech",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu470ZLW8ZsDAZxEImUlRDMAjQcrZgT97d9A&s",
+            },
+            {
+                id: 2,
+                name: "Smartphone",
+                price: 500,
+                category: "tech",
+                image:
+                    "https://www.dataselect.com/wp-content/uploads/2023/08/Smartphone-Specifications-Explained-2.webp",
+            },
+            {
+                id: 3,
+                name: "Tablet",
+                price: 300,
+                category: "tech",
+                image:
+                    "https://p2-ofp.static.pub/fes/cms/2021/10/28/juqs65pgl1gh3dysi7yv1tnvtsiqva364946.png",
+            },
+            {
+                id: 4,
+                name: "Smartwatch",
+                price: 200,
+                category: "tech",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZYso33M1gveZFihwk5c0Btm8RuzaCxDYrsA&s",
+            },
+            {
+                id: 5,
+                name: "Headphones",
+                price: 150,
+                category: "tech",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOMXAsz_IvM1FRkW8oPDB7AJnCIm_7_jpP1Q&s",
+            },
+            {
+                id: 6,
+                name: "Pizza",
+                price: 20,
+                category: "food",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb1lpruKcy8C9rhAWKCcPOFuvToDRembz-oA&s",
+            },
+            {
+                id: 7,
+                name: "Burger",
+                price: 10,
+                category: "food",
+                image:
+                    "https://simplehomeedit.com/wp-content/uploads/2024/03/Homemade-Beef-Burgers-4.webp",
+            },
+            {
+                id: 8,
+                name: "Pasta",
+                price: 15,
+                category: "food",
+                image:
+                    "https://www.allrecipes.com/thmb/mvO1mRRH1zTz1SvbwBCTz78CRJI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/67700_RichPastaforthePoorKitchen_ddmfs_4x3_2284-220302ec8328442096df370dede357d7.jpg",
+            },
+            {
+                id: 9,
+                name: "Salad",
+                price: 8,
+                category: "food",
+                image:
+                    "https://www.foodandwine.com/thmb/IuZPWAXBp4YaT9hn1YLHhuijT3k=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/FAW-recipes-big-italian-salad-hero-83e6ea846722478f8feb1eea33158b00.jpg",
+            },
+            {
+                id: 10,
+                name: "Sushi",
+                price: 25,
+                category: "food",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbfV7iV6CZBb5VR_92P5pFHdcbtsNv8ABAKg&s",
+            },
+            {
+                id: 11,
+                name: "Sofa",
+                price: 250,
+                category: "furniture",
+                image:
+                    "https://cane-line.com/cdn/shop/products/0013_CANE_LINE_INDOOR_2022_077_11935.jpg?v=1665111718",
+            },
+            {
+                id: 12,
+                name: "Chair",
+                price: 100,
+                category: "furniture",
+                image:
+                    "https://www.hslchairs.com/media/x5vmiydg/cr_hsl_0222_11630993_glenmore_singlechair2_03-lighter-ext-v2-2200.jpg?cc=0.22188860060261126,0.36128241801039435,0,0.05741187611661491&width=525&height=348&v=1da6a30af842b20",
+            },
+            {
+                id: 13,
+                name: "Table",
+                price: 150,
+                category: "furniture",
+                image:
+                    "https://i1.adis.ws/i/fv/PRODSAIGXTB-MT-001_saigon_extending-dining-table-metal-base__lifestyle?$medium$&w=579&fmt=webp",
+            },
+            {
+                id: 14,
+                name: "Bookshelf",
+                price: 120,
+                category: "furniture",
+                image: "https://m.media-amazon.com/images/I/81Foum06q6L.jpg",
+            },
+            {
+                id: 15,
+                name: "Wardrobe",
+                price: 300,
+                category: "furniture",
+                image:
+                    "https://www.ikea.com/gb/en/images/products/pax-wardrobe-white__0915674_ph145071_s5.jpg?f=s",
+            },
+            {
+                id: 16,
+                name: "T-shirt",
+                price: 30,
+                category: "clothing",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF4KPN0SAMU7i7aZ0lIf-qsFsgnxqqj1_6WQ&s",
+            },
+            {
+                id: 17,
+                name: "Jeans",
+                price: 60,
+                category: "clothing",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE7yXXm8Q5dSGRPMre74xz5G7oSUEsJrBzlw&s",
+            },
+            {
+                id: 18,
+                name: "Jacket",
+                price: 100,
+                category: "clothing",
+                image: "https://m.media-amazon.com/images/I/71g+ctE-efL._AC_UY1000_.jpg",
+            },
+            {
+                id: 19,
+                name: "Dress",
+                price: 80,
+                category: "clothing",
+                image:
+                    "https://cdn.media.amplience.net/i/truworths/prod3117346_1?fmt=auto&$pdp-main-mobile$",
+            },
+            {
+                id: 20,
+                name: "Shoes",
+                price: 120,
+                category: "clothing",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_dIAwxlAgYJxDB_Yfmv7lFT-nxqm27pzCdw&s",
+            },
+            {
+                id: 21,
+                name: "Monitor",
+                price: 300,
+                category: "tech",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUWBokiZAbXc7DWF3qm-dbPh8wThTdNttpxA&s",
+            },
+            {
+                id: 22,
+                name: "Keyboard",
+                price: 50,
+                category: "tech",
+                image:
+                    "https://down-my.img.susercontent.com/file/3e25dfcd2d032a1bf8116a01e296cb90",
+            },
+            {
+                id: 23,
+                name: "Mouse",
+                price: 40,
+                category: "tech",
+                image:
+                    "https://m.media-amazon.com/images/I/61lCLrCtuhL._AC_UF894,1000_QL80_.jpg",
+            },
+            {
+                id: 24,
+                name: "Printer",
+                price: 200,
+                category: "tech",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpOyINENX74NbtxaV2IThlsAkeR_V5AMp-OA&s",
+            },
+            {
+                id: 25,
+                name: "Camera",
+                price: 400,
+                category: "tech",
+                image:
+                    "https://www.premiumbeat.com/blog/wp-content/uploads/2020/07/Camera-Tech-Cover-photo.jpg",
+            },
+            {
+                id: 26,
+                name: "Steak",
+                price: 50,
+                category: "food",
+                image:
+                    "https://www.seriouseats.com/thmb/-KA2hwMofR2okTRndfsKtapFG4Q=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2015__05__Anova-Steak-Guide-Sous-Vide-Photos15-beauty-159b7038c56a4e7685b57f478ca3e4c8.jpg",
+            },
+            {
+                id: 27,
+                name: "Cake",
+                price: 30,
+                category: "food",
+                image:
+                    "https://www.foodandwine.com/thmb/H9NS3GaVp-2XHt6wbPtrhwh0bws=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Black-Forest-Cake-FT-RECIPE0623-29bb291902e845bab17a7fc1d65e4ebb.jpg",
+            },
+            {
+                id: 28,
+                name: "Coffee",
+                price: 5,
+                category: "food",
+                image:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxnnDQRh5hI6SFNyOktZwMs4gGo2fJnXyx0A&s",
+            },
+            {
+                id: 29,
+                name: "Books",
+                price: 20,
+                category: "furniture",
+                image:
+                    "https://images.ctfassets.net/o78em1y1w4i4/LHN0F94cNFCx1drEcfcsY/984e632abf38018f2a6ab22c4b61fdc6/teaser-book-with-heart-pages.jpg?fm=webp&w=1160&q=75",
+            },
+            {
+                id: 30,
+                name: "Lamp",
+                price: 60,
+                category: "furniture",
+                image:
+                    "https://www.rockettstgeorge.co.uk/cdn/shop/products/rockettstgeorge-black-crow-table-lamp-lores.jpg?v=1683720783",
+            },
+        ];
+        const categories = [
+            {
+                name: "Bütün Məhsullar",
+                type: "all"
+            },
+            {
+                name: "Qida",
+                type: "food"
+            },
+            {
+                name: "Mebel",
+                type: "furniture"
+            },
+            {
+                name: "Geyim",
+                type: "clothing"
+            },
+            {
+                name: "Texnologiya",
+                type: "tech"
+            },
+        ]
+
+        const filtersDiv = document.getElementById("filtersDiv");
+        const productsDiv = document.getElementById("productsDiv");
+        const orderCountRes = document.getElementById("orderCountRes");
+        const dialog = document.querySelector("dialog");
+        const orderProds = document.getElementById("orderProds");
+        const total = document.getElementById("total");
+
+        filtersDiv.innerHTML = categories.reduce((acc, categ) => acc + `<button class="text-white border-0 text-start p-2 col-12 rounded" onclick="filterProds('${categ.type}')">${categ.name}</button>`, "");
+
+        let filteredData = [], orderData = [], totalPrice = 0;
+
+        filterProds("all");
+        function filterProds(type) {
+            filteredData = type == "all" ? [...products] : products.filter(item => item.category == type);
+            updateProds(filteredData);
+        }
+
+        function handleDialog(type = "on") {
+            if (type == "on" || type == "update") {
+                type == "on" && dialog.showModal();
+
+                orderProds.innerHTML = orderData.reduce((acc, item, index) => acc +
+                    `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p>${item.name} - $${item.price} x ${item.count}</p>
+                            <div class="updateControlls d-flex align-items-center">
+                                <button class="border-0 text-white rounded" onclick="updateOrder('decr', ${index})">-</button>
+                                <button class="border-0 text-white rounded" onclick="updateOrder('incr', ${index})">+</button>
+                                <button class="border-0 text-white rounded" onclick="updateOrder('rmv', ${index})">Sil</button>
+                            </div>
+                        </div>
+                    `, ""
+                );
+
+                total.innerHTML = `Toplam: $${orderData.reduce((acc, item) => acc + item.price * item.count, 0)}`;
+            }
+            else dialog.close();
+        }
+
+        function updateProds(prodArr = products) {
+            productsDiv.innerHTML = prodArr.reduce((acc, prod) => acc +
+                `
+                    <div class="col" >
+                        <div class="card h-100 p-2">
+                            <img src="${prod.image}"
+                                class="card-img-top rounded" alt="${prod.name}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">${prod.name}</h5>
+                                <p class="card-text">Qiymət $${prod.price}</p>
+                                <button class="addToCartBtn text-white p-1 rounded border-0" onclick='addToCart(${prod.id})'>Səbətə əlavə et</button>
+                            </div>
+                        </div>
+                    </div>
+                `, ""
+            )
+        }
+
+
+        function addToCart(id) {
+            const index = orderData.findIndex(item => item.id == id);
+
+            let singleProd;
+            index != -1 ? orderData[index].count++ :
+                (singleProd = products.find(item => item.id == id),
+                    orderData.push({ ...singleProd, count: 1 }));
+
+            updateOrderCount();
+        }
+
+        function updateOrderCount() {
+            orderCountRes.innerHTML = orderData.length;
+        }
+
+        function updateOrder(type, i) {
+            type == "incr" ? orderData[i].count++ : type == "decr" ? orderData[i].count != 1 && orderData[i].count-- : orderData.splice(i, 1);
+            updateOrderCount();
+            handleDialog("update");
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
