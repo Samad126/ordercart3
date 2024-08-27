@@ -437,7 +437,7 @@
         }
 
         function updateOrder(type, i) {
-            type == "incr" ? orderData[i].count++ : type == "decr" ? orderData[i].count != 1 && orderData[i].count-- : orderData.splice(i, 1);
+            type == "incr" ? orderData[i].count++ : type == "decr" ? (orderData[i].count != 1 ? orderData[i].count-- : orderData.splice(i, 1)) : orderData.splice(i, 1);
             updateOrderCount();
             handleDialog("update");
         }
